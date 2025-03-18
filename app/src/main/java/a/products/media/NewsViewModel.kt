@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import retrofit2.http.Query
 
 class NewsViewModel: ViewModel() {
 
@@ -21,14 +22,37 @@ class NewsViewModel: ViewModel() {
         fetchNewsTopHeadlines()
     }
 
-    private fun fetchNewsTopHeadlines() {
+    fun fetchNewsTopHeadlines(category: String = "General") {
         val newsApiClient = NewsApiClient(Constant.apiKey)
         val request = TopHeadlinesRequest.Builder()
             .language("en")
             .country("us")
+            .category(category)
             .build()
 
         newsApiClient.getTopHeadlines(request, object : NewsApiClient.ArticlesResponseCallback {
+            override fun onSuccess(response: ArticleResponse?) {
+                response?.articles?.let {
+                    _articles.postValue(it)
+                }
+            }
+
+            override fun onFailure(throwable: Throwable?) {
+                Log.e("NewsAPI", "Ошибка запроса: ${throwable?.message}", throwable)
+                throwable?.printStackTrace()
+            }
+
+        })
+
+    }
+    fun fetchEverythingWithQuery(query: String) {
+        val newsApiClient = NewsApiClient(Constant.apiKey)
+        val request = EverythingRequest.Builder()
+            .language("en")
+            .q(query)
+            .build()
+
+        newsApiClient.getEverything(request, object : NewsApiClient.ArticlesResponseCallback {
             override fun onSuccess(response: ArticleResponse?) {
                 response?.articles?.let {
                     _articles.postValue(it)

@@ -18,7 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import com.kwabenaberko.newsapilib.models.Article
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +29,8 @@ class MainActivity : ComponentActivity() {
         val newsViewModel = ViewModelProvider(this)[NewsViewModel::class.java]
         setContent {
             AmediaTheme {
+                val navController = rememberNavController()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(
                         modifier = Modifier.padding(innerPadding)
@@ -42,14 +46,21 @@ class MainActivity : ComponentActivity() {
                         )
                         val articleCount by newsViewModel.articles.observeAsState(emptyList())
                         Text(
-                            text = "You have ${articleCount.size} unread articles",
+                            text = "You have ${articleCount.size} articles to read",
                             modifier = Modifier.align(Alignment.Start)
                                 .padding(12.dp),
                             color = Color.DarkGray,
                             fontSize = 16.sp,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
                         )
-                        HomePage(newsViewModel)
+                        NavHost(navController = navController, startDestination = HomePageScreen) {
+                            composable<HomePageScreen> {
+                                HomePage(newsViewModel, navController)
+                            }
+                            composable<NewsArticlePage> {
+                                NewsArticlePage()
+                            }
+                        }
                     }
                 }
             }
