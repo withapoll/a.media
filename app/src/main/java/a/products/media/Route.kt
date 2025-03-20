@@ -6,4 +6,6 @@ import kotlinx.serialization.Serializable
 object HomePageScreen
 
 @Serializable
-object NewsArticlePage
+data class NewsArticlePageRoute (
+    val url: String
+)

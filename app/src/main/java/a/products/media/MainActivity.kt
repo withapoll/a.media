@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,8 +58,9 @@ class MainActivity : ComponentActivity() {
                             composable<HomePageScreen> {
                                 HomePage(newsViewModel, navController)
                             }
-                            composable<NewsArticlePage> {
-                                NewsArticlePage()
+                            composable<NewsArticlePageRoute> {
+                                val args = it.toRoute<NewsArticlePageRoute>()
+                                NewsArticlePage(args.url)
                             }
                         }
                     }

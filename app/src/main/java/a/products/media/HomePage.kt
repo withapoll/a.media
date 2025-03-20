@@ -67,7 +67,7 @@ fun ArticleItem(article: Article, navController: NavHostController) {
             disabledContentColor = Color.Gray
         ),
         onClick = {
-            navController.navigate(NewsArticlePage)
+            navController.navigate(NewsArticlePageRoute(article.url))
         }
     ) {
         Row(
